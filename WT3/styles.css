@@ -1,0 +1,21 @@
+body{
+    background-color: #9AD0C2;
+}
+.blog-post {
+    margin-bottom: 50px;
+}
+
+#searchInput {
+    width: 500px; 
+}
+.blog-post {
+    transition: transform 0.3s ease;
+}
+
+.blog-post.expanded {
+    transform: translateY(100%);
+}
+
+
+
+

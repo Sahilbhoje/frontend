@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Blog</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Sahil's Dynamic Blog</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+           
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <input type="text" id="searchInput" class="form-control mr-2" placeholder="Search Blog Posts...">
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="background-section"></div>
+
+    <div class="container mt-4">
+        <div id="blogPosts" class="row"></div>
+    </div>
+
+    <script>
+        fetch('blogs.json')
+            .then(response => response.json())
+            .then(data => {
+                const blogPostsContainer = document.getElementById('blogPosts');
+                const searchInput = document.getElementById('searchInput');
+                
+
+                function displayPosts(posts) {
+                    blogPostsContainer.innerHTML = '';
+                    posts.forEach(post => {
+                        const postHTML = `
+                            <div class="col-md-4">
+                                <div class="card mb-4">
+                                    <img src="${post.image}" class="card-img-top" alt="${post.title}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${post.title}</h5>
+                                        <p class="card-text">${post.content.substring(0, 100)}...</p>
+                                        <button class="btn btn-primary read-more-btn" data-toggle="collapse" data-target="#${post.title.replace(/\s/g, '')}" aria-expanded="false" aria-controls="${post.title.replace(/\s/g, '')}">
+                                            Read More
+                                        </button>
+                                        <div class="collapse" id="${post.title.replace(/\s/g, '')}">
+                                            <p>${post.content}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `; 
+                        blogPostsContainer.innerHTML += postHTML;
+                    });
+                }
+
+                displayPosts(data);
+
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const filteredPosts = data.filter(post => post.title.toLowerCase().includes(searchTerm) || post.content.toLowerCase().includes(searchTerm));
+                    displayPosts(filteredPosts);
+                });
+            })
+            .catch(error => console.error('Error fetching blog data:', error));
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
